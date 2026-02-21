@@ -5,7 +5,7 @@ class Highway < Formula
 
   # Update this URL and sha256 when you publish a release tarball
   url "https://github.com/nekosheen/highway/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "REPLACE_WITH_SHA256_OF_RELEASE_TARBALL"
+  sha256 "525f4f26feafb09370086fbab3a9f40bf6eb4e82eca067a151d85245be9f2142"
 
   depends_on "python3"
 
