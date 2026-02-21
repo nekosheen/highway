@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# highway — Claude Code model routing CLI
+# https://github.com/nekosheen/highway
+set -euo pipefail
+
+VERSION="0.1.0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+usage() {
+  cat <<EOF
+highway v$VERSION — Model routing for Claude Code
+
+USAGE:
+  highway <command>
+
+COMMANDS:
+  install     Inject model routing policy into Claude Code global config
+  uninstall   Remove all highway patches from Claude Code config
+  status      Show current installation state
+  version     Print version
+
+HOW IT WORKS:
+  highway patches two files in ~/.claude/:
+    - CLAUDE.md       Routing policy (haiku / sonnet / opus per task type)
+    - settings.json   PreToolUse hook that audits Task tool calls
+
+  After install, Claude Code will automatically route agents:
+    haiku  → file searches, lookups, status checks
+    sonnet → code, debugging, refactoring
+    opus   → architecture, security review, strategy
+
+EXAMPLES:
+  highway install
+  highway status
+  highway uninstall
+EOF
+}
+
+case "${1:-}" in
+  install)
+    source "$SCRIPT_DIR/lib/install.sh"
+    ;;
+  uninstall)
+    source "$SCRIPT_DIR/lib/uninstall.sh"
+    ;;
+  status)
+    source "$SCRIPT_DIR/lib/status.sh"
+    ;;
+  version|--version|-v)
+    echo "highway v$VERSION"
+    ;;
+  help|--help|-h|"")
+    usage
+    ;;
+  *)
+    echo "❌ Unknown command: $1"
+    echo ""
+    usage
+    exit 1
+    ;;
+esac

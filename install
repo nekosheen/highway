@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# highway — one-line installer
+# Usage: curl -fsSL https://raw.githubusercontent.com/nekosheen/highway/main/install | bash
+set -euo pipefail
+
+REPO="nekosheen/highway"
+INSTALL_DIR="${HIGHWAY_INSTALL_DIR:-$HOME/.local/share/highway}"
+BIN_DIR="${HIGHWAY_BIN_DIR:-$HOME/.local/bin}"
+BRANCH="main"
+BASE_URL="https://raw.githubusercontent.com/$REPO/$BRANCH"
+
+echo "🛣️  Installing highway..."
+
+# ── Checks ────────────────────────────────────────────────────────────────────
+
+if ! command -v python3 &>/dev/null; then
+  echo "❌ python3 is required. Install it and try again."
+  exit 1
+fi
+
+if ! command -v curl &>/dev/null; then
+  echo "❌ curl is required."
+  exit 1
+fi
+
+# ── Download ──────────────────────────────────────────────────────────────────
+
+mkdir -p "$INSTALL_DIR/bin" "$INSTALL_DIR/lib" "$INSTALL_DIR/templates" "$BIN_DIR"
+
+download() {
+  local path="$1"
+  local dest="$INSTALL_DIR/$path"
+  mkdir -p "$(dirname "$dest")"
+  curl -fsSL "$BASE_URL/$path" -o "$dest"
+}
+
+download "bin/highway"
+download "lib/install.sh"
+download "lib/uninstall.sh"
+download "lib/status.sh"
+download "templates/routing-block.md"
+download "templates/hook.sh"
+
+# ── Permissions ───────────────────────────────────────────────────────────────
+
+chmod +x "$INSTALL_DIR/bin/highway"
+chmod +x "$INSTALL_DIR/lib/install.sh"
+chmod +x "$INSTALL_DIR/lib/uninstall.sh"
+chmod +x "$INSTALL_DIR/lib/status.sh"
+chmod +x "$INSTALL_DIR/templates/hook.sh"
+
+# ── Symlink ───────────────────────────────────────────────────────────────────
+
+ln -sf "$INSTALL_DIR/bin/highway" "$BIN_DIR/highway"
+
+# ── PATH check ────────────────────────────────────────────────────────────────
+
+if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
+  echo ""
+  echo "⚠️  $BIN_DIR is not in your PATH."
+  echo "   Add this to your shell profile (~/.zshrc or ~/.bashrc):"
+  echo "   export PATH=\"\$PATH:$BIN_DIR\""
+  echo ""
+fi
+
+# ── Done ──────────────────────────────────────────────────────────────────────
+
+echo "✅ highway installed to $INSTALL_DIR"
+echo "   Symlinked: $BIN_DIR/highway"
+echo ""
+echo "Next step: highway install"
