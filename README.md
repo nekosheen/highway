@@ -17,11 +17,20 @@ Claude Code uses the `Task` tool to spawn sub-agents. `highway` teaches it to pi
 
 ## Install
 
-### Via Homebrew (recommended)
+### One-liner (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nekosheen/highway/main/install | bash
+highway install
+```
+
+### Via Homebrew
+
+> Note: if you have Google's `highway` SIMD library installed (`brew info highway`), use the one-liner above instead — Homebrew disallows same-name formulae from different taps.
 
 ```bash
 brew tap nekosheen/highway
-brew install highway
+brew install nekosheen/highway/highway
 highway install
 ```
 
